@@ -456,15 +456,23 @@ async def handle_act(
         tool_calls_made = 0
         decision = None
 
+        # Use a stronger model for complex multi-condition tasks
+        _n_constraints = len(state.constraints)
+        _complex_model: str | None = None
+        if _n_constraints >= 3:
+            _complex_model = os.getenv("COMPLEX_MODEL", "gpt-4o")
+            if _complex_model == client.model:
+                _complex_model = None  # already using the target model
+
         for _ in range(max_tool_calls + 2):
-            content = client.chat(task, messages)
+            content = client.chat(task, messages, model_override=_complex_model)
             parsed = parse_llm_response(content)
 
             if parsed is None:
                 # Retry with stronger instruction
                 messages.append({"role": "assistant", "content": content})
                 messages.append({"role": "user", "content": "Return ONLY valid JSON. No markdown."})
-                content = client.chat(task, messages)
+                content = client.chat(task, messages, model_override=_complex_model)
                 parsed = parse_llm_response(content)
 
             if parsed is None:

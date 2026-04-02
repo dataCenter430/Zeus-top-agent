@@ -291,7 +291,16 @@ def try_shortcut(
         return None
 
     if task_type == "registration":
-        return get_registration_actions(candidates, creds=creds)
+        actions = get_registration_actions(candidates, creds=creds)
+        if actions is not None:
+            return actions
+        # Not on registration page yet — find Register/Sign Up link
+        for c in candidates:
+            if c.text and any(kw in c.text.lower() for kw in ("register", "sign up", "signup", "create account", "create an account")):
+                return [{"type": "ClickAction", "selector": c.selector.model_dump()}]
+            if c.href and any(kw in c.href.lower() for kw in ("/register", "/signup", "sign-up", "/auth/register")):
+                return [{"type": "ClickAction", "selector": c.selector.model_dump()}]
+        return None
 
     if task_type == "contact":
         return get_contact_actions(candidates)

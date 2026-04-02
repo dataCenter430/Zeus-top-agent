@@ -195,14 +195,12 @@ WEBSITE_HINTS: dict[str, str] = {
         "Contact doctor form: opens when Contact button clicked on doctor card."
     ),
     "autostats": (
-        "SITE: Bittensor network analytics dashboard. NAV: Subnets list, Validators, Miners, Dashboard. "
-        "Subnet cards/rows: subnet_name, subnet_id, description, emission, registration_cost, validators, miners. "
-        "Subnet actions: Favorite/Unfavorite (star/heart icon on card), View Details. "
-        "Favorite: click the star/heart icon on a subnet card to toggle favorite. "
-        "Filters: search bar for subnet name, filter controls for metrics. "
-        "Validator/Miner detail: name, stake, rank, trust, emission. "
-        "Date range selector, metric dropdowns, chart views. "
-        "Export: download/export button for data tables."
+        "SITE: Bittensor analytics. Subnet cards: favorite with star/heart icon. "
+        "WALLET: 'Connect Wallet' button in header → modal → select wallet type (Polkadot.js/MetaMask). "
+        "BLOCKS: Blocks section in nav → table of blocks with hash, number, timestamp, transactions. "
+        "NAV: Subnets, Validators, Miners, Dashboard, Blocks. "
+        "Subnet fields: subnet_name, subnet_id, description, emission, registration_cost. "
+        "Validator/Miner: name, stake, rank, trust, emission. Export: download button."
     ),
     "autodiscord": (
         "SITE: Discord-style chat application. LEFT SIDEBAR: server list (icons), channel list per server. "
@@ -224,7 +222,7 @@ WEBSITE_HINTS: dict[str, str] = {
 # Task playbooks (130+ step-by-step guides per task type)
 # ---------------------------------------------------------------------------
 TASK_PLAYBOOKS: dict[str, str] = {
-    "REGISTRATION": "PLAYBOOK: 1) Navigate to register/signup page. 2) Type signup_username into username field. 3) Type signup_email into email field. 4) Type signup_password into password field. 5) Click submit/register button. Use EXACT credential values.",
+    "REGISTRATION": "PLAYBOOK: 1) Find and click Register/Sign Up link in navbar or on homepage. 2) On the registration form page: type <signup_username> into username field, type <signup_email> into email field. 3) Type <signup_password> into password field (and confirm password field if present). 4) Click Submit/Register button. Use placeholder tokens exactly as shown.",
     "LOGIN": "PLAYBOOK: 1) Navigate to login page. 2) Type username into username/email field EXACTLY as given. 3) Type password into password field EXACTLY as given. 4) Click login/sign-in submit button.",
     "LOGIN_THEN_LOGOUT": "PLAYBOOK: 1) Navigate to login page. 2) Type username exactly. 3) Type password exactly. 4) Click login submit. 5) After login, find logout/sign-out button (often in nav/profile menu). 6) Click logout.",
     "LOGIN_THEN_LIST_ACTION": "PLAYBOOK: 1) Login (navigate to login, fill credentials, submit). 2) Search or browse to find the specific item matching the criteria. 3) Navigate to that item's detail page. 4) Click the add-to-watchlist/reading-list/cart button, or remove button.",
@@ -296,7 +294,7 @@ TASK_PLAYBOOKS: dict[str, str] = {
     "OPEN_APPOINTMENT_FORM": "PLAYBOOK: 1) Browse doctor cards. 2) Find doctor matching ALL constraints. 3) Click Book Appointment. 4) Fill in date and time. 5) Open/submit.",
     "OPEN_CONTACT_DOCTOR_FORM": "PLAYBOOK: 1) Find doctor matching ALL constraints. 2) Click Contact Doctor button.",
     "CONTACT_DOCTOR": "PLAYBOOK: 1) Find doctor matching constraints. 2) Click Contact. 3) Fill the contact form. 4) Submit.",
-    "SEARCH_APPOINTMENT": "PLAYBOOK: 1) Go to Appointments section. 2) Search/filter for matching appointments. 3) View results.",
+    "SEARCH_APPOINTMENT": "PLAYBOOK: 1) Navigate to Appointments section (click Appointments in navbar). 2) Look for search/filter input fields: doctor_name, specialty, date, patient_name, status. 3) Enter EXACT values from TASK_CONSTRAINTS into matching filter fields. 4) Click Search or Apply Filter button. 5) The matching appointments appear in the table below.",
     "REQUEST_QUICK_APPOINTMENT": "PLAYBOOK: 1) Find Quick Appointment button. 2) Fill form satisfying constraints. 3) Submit.",
     "VIEW_DOCTOR_EDUCATION": "PLAYBOOK: 1) Browse doctors list. 2) Find doctor matching ALL constraints. 3) Click on doctor's card. 4) Find Education tab/section. 5) Click it.",
     "COMMENT_ON_POST": "PLAYBOOK: 1) Find a post in the feed. 2) Click the Comment button. 3) Type the EXACT comment text. 4) Submit.",
@@ -419,7 +417,7 @@ TASK_PLAYBOOKS: dict[str, str] = {
     "REMOVE_FROM_WISHLIST": "PLAYBOOK: 1) Navigate to Wishlist (click Wishlist/Saved link). 2) Scan each hotel card. 3) For NOT constraints (title NOT contain, host NOT equal): skip any card where that field matches the excluded value. 4) For positive constraints (price equals, guests >=): require those to match. 5) Click Remove or the heart/bookmark icon on the matching hotel.",
     "JOBS_NAVBAR": "PLAYBOOK: 1) Find Jobs tab in navbar. 2) Click it.",
     "EDIT_PROFILE": "PLAYBOOK: 1) Find user matching constraints. 2) Navigate to Profile. 3) Click Edit Profile. 4) Update fields. 5) Save.",
-    "POST_STATUS": "PLAYBOOK: 1) Find status input on feed. 2) Click in text box. 3) Type content satisfying constraints. 4) Click Post.",
+    "POST_STATUS": "PLAYBOOK: 1) On the feed/home page, find the status input textarea (placeholder: 'What's on your mind?' or 'Write a post'). 2) Click on the textarea to focus it. 3) Type post content: if content 'NOT equals X' constraint, type any text that is NOT X. 4) After typing, look for 'Post' or 'Share' button. 5) Click Post to publish. If textarea not visible, scroll up to find it.",
     "REMOVE_POST": "PLAYBOOK: 1) Find post satisfying constraints. 2) Click 3-dot menu. 3) Click Remove/Delete. 4) Confirm.",
     "EDIT_PROFILE_TITLE": "PLAYBOOK: 1) Navigate to profile settings. 2) Find title field. 3) Click Edit, clear, type new value. 4) Save.",
     "POST_A_JOB": "PLAYBOOK: 1) Find Post a Job button. 2) Click it.",
@@ -476,7 +474,7 @@ TASK_PLAYBOOKS: dict[str, str] = {
     "CHANGE_NICKNAME": "PLAYBOOK: 1) Find profile or server settings. 2) Find nickname field. 3) Change to value satisfying constraints. 4) Save.",
     "SERVER_SETTINGS": "PLAYBOOK: 1) Click server name dropdown. 2) Click Server Settings.",
     # ---- AutoStats playbooks ----
-    "FAVORITE_SUBNET": "PLAYBOOK: 1) Use list_cards to see subnets. 2) Check each card against ALL CONSTRAINTS - for NOT constraints skip that card. 3) Click the Favorite/Star/Heart icon on the matching subnet card.",
+    "FAVORITE_SUBNET": "PLAYBOOK: 1) Use list_cards tool to inspect all subnet cards. 2) For each subnet: check ALL constraints simultaneously - skip if any NOT constraint matches, require all positive (equals/contains/>/< ) constraints to match. 3) Exactly one subnet will match all constraints. 4) Click the Star or Heart (favorite) icon on that specific subnet card. Do NOT click View Details - click the star/heart icon.",
     "UNFAVORITE_SUBNET": "PLAYBOOK: 1) Browse subnet list. 2) Find subnet matching constraints. 3) Click to unfavorite (toggle star/heart off).",
     "VIEW_SUBNET_DETAILS": "PLAYBOOK: 1) Browse subnet list. 2) Find subnet matching constraints. 3) Click to view details.",
     "FILTER_SUBNET": "PLAYBOOK: 1) Find search/filter controls. 2) Apply filters satisfying constraints. 3) View results.",
@@ -486,6 +484,8 @@ TASK_PLAYBOOKS: dict[str, str] = {
     "EXPORT_DATA": "PLAYBOOK: 1) Find Export/Download button. 2) Click it. 3) Select format if prompted.",
     "VIEW_DASHBOARD": "PLAYBOOK: 1) Find Dashboard link in navigation. 2) Click it.",
     "DISCONNECT_WALLET": "PLAYBOOK: 1) Navigate to Settings or Wallet/Account section. 2) Find the wallet matching the wallet_name constraint. 3) Click Disconnect button. 4) Confirm if prompted.",
+    "CONNECT_WALLET": "PLAYBOOK: 1) Look for 'Connect Wallet' button in the header/navbar. 2) Click it to open the wallet connection modal. 3) A modal/dialog appears with wallet options. 4) Click on a wallet option satisfying the wallet_name constraint (e.g. Polkadot.js, MetaMask, SubWallet). 5) Confirm the connection.",
+    "VIEW_BLOCK": "PLAYBOOK: 1) Find 'Blocks' link in the navigation. 2) Click it to navigate to the Blocks section. 3) A table of blocks appears. 4) Find the block matching ALL CONSTRAINTS (block_number equals, hash equals, timestamp, transactions count). 5) Click on the matching block row to view details.",
     # ---- New task types from failure analysis ----
     "VIEW_HOTEL_DETAIL": "PLAYBOOK: 1) If currently on a hotel detail page, click Back or 'All Hotels' link first to return to the list. 2) Scroll through hotel cards. 3) For NOT constraints: skip any card where that field matches the excluded value. 4) Match ALL positive constraints (title, price, amenities, host_name, etc.) - the title/price/amenities may require clicking into each hotel to verify. 5) Click View Details or the hotel card title.",
     "REORDER": "PLAYBOOK: 1) Navigate to Orders or Order History section. 2) Find the past order containing the item matching constraints (item name, restaurant). 3) Click Reorder button on that order.",
@@ -494,8 +494,8 @@ TASK_PLAYBOOKS: dict[str, str] = {
     "OPEN_DM": "PLAYBOOK: 1) Find Direct Messages link or icon in the left sidebar or navigation bar. 2) Click it.",
     "CLEAR_CART": "PLAYBOOK: 1) Navigate to Cart or Shopping Cart. 2) Find items matching constraints (item name, price). 3) Remove items one by one up to the maximum quantity limit specified. 4) Confirm each removal.",
     "PLACE_ORDER": "PLAYBOOK: 1) Navigate to restaurant matching constraints. 2) Find menu item matching ALL constraints (name, price; NOT equals quantity: pick any other). 3) Add to cart. 4) Checkout. 5) Fill phone, address exactly. 6) Set mode (pickup/delivery). 7) Add preferences (contains: type text with substring). 8) Place order.",
-    "BOOK_APPOINTMENT": "PLAYBOOK: 1) Go to Doctors. 2) Skip doctors matching NOT constraint on name/speciality. 3) Click Book Appointment on matching doctor. 4) Fill form: time/date/phone/emergency_contact/insurance_number (exact). patient_name/email with NOT constraint: any value not matching excluded. reason_for_visit with NOT: pick any OTHER dropdown option. 5) Submit.",
-    "ADD_EXPERIENCE": "PLAYBOOK: 1) Navigate to Profile or Edit Profile. 2) Find Experience section. 3) Click Add Experience or + button. 4) Fill: company field with exact equals value, title field (NOT constraint: pick any title that is NOT the excluded value), location field with exact value, description field (contains constraint: type text that includes the specified substring). 5) Save.",
+    "BOOK_APPOINTMENT": "PLAYBOOK: 1) Browse Doctors list. 2) Skip any doctor where name/speciality matches a NOT constraint. 3) Click Book Appointment on the matching doctor. 4) Fill form fields: date/time/phone/insurance exactly as given; for NOT constraints on patient_name/email/reason pick any value that is NOT the excluded one. 5) Submit the form.",
+    "ADD_EXPERIENCE": "PLAYBOOK: 1) Navigate to Profile or Edit Profile page. 2) Find Experience section. 3) Click Add Experience or + button. 4) Fill form: company=exact value, title=any value NOT matching excluded title, location=exact value, description=any text containing the specified substring. 5) Save/Submit.",
     "BACK_TO_ALL_JOBS": "PLAYBOOK: 1) Find and click Back, All Jobs, or Jobs breadcrumb link to return to job list. 2) Scroll through jobs. 3) For NOT constraints: skip any job where that field matches the excluded value. 4) Find job matching ALL constraints (title, company, location). 5) Click to view details.",
     "ABOUT_FEATURE_CLICK": "PLAYBOOK: 1) Navigate to About page (look for About link in navbar). 2) Find feature cards/sections. 3) Click on the feature whose text CONTAINS the specified value.",
     "GENERAL": "PLAYBOOK: Analyze the task carefully, identify the key action required, and execute the most direct path. Use TASK_CONSTRAINTS to find the correct item and fill forms.",

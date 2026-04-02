@@ -86,6 +86,10 @@ def classify_task_type(prompt: str) -> str:
         return "SWITCH_CHANNEL"
 
     # ---- AutoStats (8014) ----
+    if re.search(r"connect\s+(a\s+)?wallet|wallet\s+connect|wallet\s+that\s+equals", t, re.IGNORECASE):
+        return "CONNECT_WALLET"
+    if re.search(r"(view|show|open)\s+(the\s+)?block\s+where|show\s+details\s+for\s+(a\s+)?block|block\s+where\s+the\s+(hash|number|timestamp|transactions)", t, re.IGNORECASE):
+        return "VIEW_BLOCK"
     if re.search(r"disconnect\s+(the\s+)?wallet", t, re.IGNORECASE):
         return "DISCONNECT_WALLET"
     if re.search(r"show\s+details\s+for\s+(a\s+)?subnet\s+where|show\s+details?\s+for\s+(a|the)\s+subnet", t, re.IGNORECASE):
@@ -559,6 +563,10 @@ def classify_task_type(prompt: str) -> str:
         return "EDIT_PROFILE"
     if re.search(r"post\s+a\s+status\s+update", t, re.IGNORECASE):
         return "POST_STATUS"
+    if re.search(r"(post|share|write)\s+(an?\s+)?(status|update|post)\s+where|status\s+update\s+where\s+the\s+content", t, re.IGNORECASE):
+        return "POST_STATUS"
+    if re.search(r"add\s+(work\s+)?experience\s+(at|in|with)", t, re.IGNORECASE):
+        return "ADD_EXPERIENCE"
     if re.search(r"remove\s+post\s+where", t, re.IGNORECASE):
         return "REMOVE_POST"
 

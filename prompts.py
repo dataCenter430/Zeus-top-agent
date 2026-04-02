@@ -21,8 +21,16 @@ def build_system_prompt() -> str:
         "- For forms with NOT constraints on a field: pick any valid option from the dropdown that is NOT the excluded value.\n"
         "CREDENTIALS: username/email may have trailing spaces - type them exactly as shown in quotes.\n"
         "MULTI-STEP: complete login first, then the secondary action. Track progress in memory.\n"
-        "TOOLS: Return {\"tool\":\"<name>\",\"args\":{...}} to inspect page. Max 1 tool per step. "
-        "Tools: list_cards({max_cards?,max_text?}); search_text({query}); list_links({}); extract_forms({}).\n"
+        "STRATEGY: For tasks with constraints, call match_cards or filter_table FIRST to find the exact item, then interact with it using the returned candidate_id.\n"
+        "TOOLS: Return {\"tool\":\"<name>\",\"args\":{...}} to inspect the page before acting. "
+        "Tools: "
+        "match_cards({constraints:[{field,operator,value}]}): find cards/items matching ALL constraints - USE THIS FIRST when you have TASK_CONSTRAINTS to locate an item; "
+        "filter_table({constraints:[{field,operator,value}]}): filter HTML table rows matching ALL constraints - USE when data is in a table; "
+        "list_cards({max_cards?,max_text?}): list all cards without filtering; "
+        "search_text({query}): search HTML for text; "
+        "list_links({}): list all links; "
+        "extract_forms({}): extract form fields. "
+        "Operator values: equals|not_equals|contains|not_contains|greater_than|less_than|greater_equal|less_equal.\n"
         "JSON ONLY. No explanation."
     )
 
@@ -65,7 +73,7 @@ def build_user_prompt(
 
     # --- Website hints ---
     if website_hint:
-        hint_capped = website_hint[:150] + "..." if len(website_hint) > 150 else website_hint
+        hint_capped = website_hint[:280] + "..." if len(website_hint) > 280 else website_hint
         parts.append(f"\nSITE_HINTS: {hint_capped}")
 
     # --- Credentials ---
@@ -78,7 +86,7 @@ def build_user_prompt(
 
     # --- Playbook ---
     if playbook:
-        playbook_capped = playbook[:350] + "..." if len(playbook) > 350 else playbook
+        playbook_capped = playbook[:500] + "..." if len(playbook) > 500 else playbook
         parts.append(f"\n{playbook_capped}")
 
     # --- Page summary (DOM digest, early steps only) ---

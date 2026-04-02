@@ -74,13 +74,14 @@ class LLMClient:
         wait=wait_exponential(multiplier=0.5, min=0.5, max=3.0),
         retry=retry_if_exception(_is_retryable),
     )
-    def chat(self, task_id: str, messages: list[dict]) -> str:
+    def chat(self, task_id: str, messages: list[dict], model_override: str | None = None) -> str:
         self._total_calls += 1
         if self.provider == "anthropic":
-            return self._chat_anthropic(task_id, messages)
-        return self._chat_openai(task_id, messages)
+            return self._chat_anthropic(task_id, messages, model_override=model_override)
+        return self._chat_openai(task_id, messages, model_override=model_override)
 
-    def _chat_openai(self, task_id: str, messages: list[dict]) -> str:
+    def _chat_openai(self, task_id: str, messages: list[dict], model_override: str | None = None) -> str:
+        model = model_override or self.model
         headers = {
             "Content-Type": "application/json",
             "IWA-Task-ID": task_id,
@@ -89,7 +90,7 @@ class LLMClient:
             headers["Authorization"] = f"Bearer {self.api_key}"
 
         body: dict = {
-            "model": self.model,
+            "model": model,
             "messages": messages,
             "temperature": self.temperature,
             "max_tokens": self.max_tokens,
@@ -102,11 +103,13 @@ class LLMClient:
         data = resp.json()
 
         usage = data.get("usage", {})
-        self._track_cost(usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0))
+        rates = _get_cost_rates(model)
+        self._track_cost_with_rates(usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0), rates)
 
         return data["choices"][0]["message"]["content"]
 
-    def _chat_anthropic(self, task_id: str, messages: list[dict]) -> str:
+    def _chat_anthropic(self, task_id: str, messages: list[dict], model_override: str | None = None) -> str:
+        model = model_override or self.model
         headers = {
             "Content-Type": "application/json",
             "x-api-key": self.api_key,
@@ -123,7 +126,7 @@ class LLMClient:
                 claude_messages.append({"role": msg["role"], "content": msg["content"]})
 
         body: dict = {
-            "model": self.model,
+            "model": model,
             "max_tokens": self.max_tokens,
             "temperature": self.temperature,
             "messages": claude_messages,
@@ -138,19 +141,23 @@ class LLMClient:
         data = resp.json()
 
         usage = data.get("usage", {})
-        self._track_cost(usage.get("input_tokens", 0), usage.get("output_tokens", 0))
+        rates = _get_cost_rates(model)
+        self._track_cost_with_rates(usage.get("input_tokens", 0), usage.get("output_tokens", 0), rates)
 
         content = data.get("content", [])
         return content[0]["text"] if content else ""
 
-    def _track_cost(self, prompt_tokens: int, completion_tokens: int) -> None:
-        p_rate, c_rate = self._cost_rates
+    def _track_cost_with_rates(self, prompt_tokens: int, completion_tokens: int, rates: tuple[float, float]) -> None:
+        p_rate, c_rate = rates
         cost = (prompt_tokens * p_rate + completion_tokens * c_rate) / 1_000_000
         self._total_cost += cost
         logger.debug(
             f"LLM call cost=${cost:.6f} total=${self._total_cost:.6f} "
             f"prompt={prompt_tokens} completion={completion_tokens}"
         )
+
+    def _track_cost(self, prompt_tokens: int, completion_tokens: int) -> None:
+        self._track_cost_with_rates(prompt_tokens, completion_tokens, self._cost_rates)
 
     @property
     def total_cost(self) -> float:
